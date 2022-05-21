@@ -5,7 +5,8 @@ const cors = require("cors");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
-
+var nodemailer = require("nodemailer");
+var sgTransport = require("nodemailer-sendgrid-transport");
 app.use(cors());
 app.use(express.json());
 
@@ -16,6 +17,45 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
+
+const emailSenderOptions = {
+  auth: {
+    api_key: process.env.EMAIL_SENDER,
+  },
+};
+
+function sendAppointmentEmail(booking) {
+  const { patient, patientName, treatment, date, slot } = booking;
+
+  var email = {
+    from: process.env.EMAIL,
+    to: patient,
+    subject: `Your Appointment for ${treatment} is on ${date} at ${slot} is Confirmed`,
+    text: `Your Appointment for ${treatment} is on ${date} at ${slot} is Confirmed`,
+    html: `
+      <div>
+        <p> Hello ${patientName}, </p>
+        <h3>Your Appointment for ${treatment} is confirmed</h3>
+        <p>Looking forward to seeing you on ${date} at ${slot}.</p>
+        
+        <h3>Our Address</h3>
+        <p>Prosanti R/A, Colonel Hat</p>
+        <p>Chittagong, Bangladesh</p>
+        <a href="https://rafath.herokuapp.com/">Unsubscribe</a>
+      </div>
+    `,
+  };
+
+  emailClient.sendMail(email, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: ", info);
+    }
+  });
+}
+
+const emailClient = nodemailer.createTransport(sgTransport(emailSenderOptions));
 
 function verifyJWT(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -88,11 +128,9 @@ async function run() {
         $set: user,
       };
       const result = await userData.updateOne(filter, updateDoc, options);
-      const token = jwt.sign(
-        { email: email },
-        process.env.SECRET,
-        { expiresIn: "12h" }
-      );
+      const token = jwt.sign({ email: email }, process.env.SECRET, {
+        expiresIn: "12h",
+      });
       res.send({ result, token });
     });
 
