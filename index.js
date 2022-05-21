@@ -90,8 +90,8 @@ async function run() {
       const result = await userData.updateOne(filter, updateDoc, options);
       const token = jwt.sign(
         { email: email },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "1h" }
+        process.env.SECRET,
+        { expiresIn: "12h" }
       );
       res.send({ result, token });
     });
