@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
@@ -165,15 +165,7 @@ async function run() {
       res.send(services);
     });
 
-    /**
-     * API Naming Convention
-     * app.get('/booking') // get all bookings in this collection. or get more than one or by filter
-     * app.get('/booking/:id') // get a specific booking
-     * app.post('/booking') // add a new booking
-     * app.patch('/booking/:id) //
-     * app.put('/booking/:id') // upsert ==> update (if exists) or insert (if doesn't exist)
-     * app.delete('/booking/:id) //
-     */
+   
 
     app.get("/booking", verifyJWT, async (req, res) => {
       const patient = req.query.patient;
@@ -186,6 +178,13 @@ async function run() {
         return res.status(403).send({ message: "forbidden access" });
       }
     });
+
+    app.get('/booking/:id', verifyJWT, async(req, res) =>{
+      const id = req.params.id;
+      const query = {_id: ObjectId(id)};
+      const booking = await appointment.findOne(query);
+      res.send(booking);
+    })
 
     app.post("/booking", async (req, res) => {
       const booking = req.body;
