@@ -85,7 +85,8 @@ async function run() {
     const appointment = client.db("doctors_portal").collection("bookings");
     const userData = client.db("doctors_portal").collection("user");
     const doctorData = client.db("doctors_portal").collection("doctor");
-
+    const paymentData = client.db("doctors_portal").collection("payments");
+    
     const verifyAdmin = async (req, res, next) => {
       const requester = req.decoded.email;
       const requesterAccount = await userData.findOne({ email: requester });
@@ -107,6 +108,22 @@ async function run() {
       });
       res.send({clientSecret: paymentIntent.client_secret})
     });
+
+    app.patch('/booking/:id', verifyJWT, async(req, res) =>{
+      const id  = req.params.id;
+      const payment = req.body;
+      const filter = {_id: ObjectId(id)};
+      const updatedDoc = {
+        $set: {
+          paid: true,
+          transactionId: payment.transactionId
+        }
+      }
+
+      const result = await paymentData.insertOne(payment);
+      const updatedBooking = await appointment.updateOne(filter, updatedDoc);
+      res.send(updatedBooking);
+    }) 
 
     app.get("/service", async (req, res) => {
       const query = {};
