@@ -8,11 +8,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 var nodemailer = require("nodemailer");
 var sgTransport = require("nodemailer-sendgrid-transport");
-app.use(
-  cors({
-    origin: "https://doctors-portal-client-sigma.vercel.app/",
-  })
-);
+app.use(cors({ credentials: true, origin: true }));
 app.use(express.json());
 
 // sk_test_51BoX61IXEsb8wMTRMSwhAWJU4ZwO3VquJsFoxiSA4GYEIVEZv9Qz91sKRHYUKb4w5h1jHGb0B0zEKQBECGsmlyGc00kZHJ5q1R
@@ -81,7 +77,7 @@ function verifyJWT(req, res, next) {
 
 const run = async () => {
   try {
-    // await client.connect();
+    await client.connect();
     const data = client.db("doctors_portal").collection("service");
     const appointment = client.db("doctors_portal").collection("bookings");
     const userData = client.db("doctors_portal").collection("user");
@@ -256,9 +252,9 @@ const run = async () => {
     });
   } finally {
   }
-};
+}
 
-run().catch((err) => console.log(err));
+run().catch(console.dir);
 
 app.get("/", (req, res) => {
   res.send("Server is running");
