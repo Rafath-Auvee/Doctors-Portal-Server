@@ -16,7 +16,7 @@ const corsOptions = {
   exposedHeaders: 'Content-Type, Authorization', 
 };
 
-app.use(cors({ corsOptions, credentials: true, origin: true }));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // sk_test_51BoX61IXEsb8wMTRMSwhAWJU4ZwO3VquJsFoxiSA4GYEIVEZv9Qz91sKRHYUKb4w5h1jHGb0B0zEKQBECGsmlyGc00kZHJ5q1R
@@ -137,7 +137,7 @@ const run = async () => {
       res.send(services);
     });
 
-    app.get("/user", verifyJWT, async (req, res) => {
+    app.get("/user", async (req, res) => {
       const users = await userData.find().toArray();
       res.send(users);
     });
