@@ -267,6 +267,9 @@ const run = async () => {
   } finally {
   }
 }
+app.get("/outside", async(req,res)=>{
+  res.status(200).send({ message: "outside" });
+})
 
 run().catch((err) => console.log(err));
 
