@@ -85,7 +85,7 @@ function verifyJWT(req, res, next) {
 
 const run = async () => {
   try {
-    await client.connect();
+    // await client.connect();
     const data = client.db("doctors_portal").collection("service");
     const appointment = client.db("doctors_portal").collection("bookings");
     const userData = client.db("doctors_portal").collection("user");
