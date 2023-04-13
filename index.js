@@ -102,6 +102,8 @@ const run = async () => {
       }
     };
 
+
+
     app.post("/create-payment-intent", verifyJWT, async (req, res) => {
       const service = req.body;
       const price = service.price;
@@ -113,6 +115,10 @@ const run = async () => {
       });
       res.send({ clientSecret: paymentIntent.client_secret });
     });
+
+    app.get("/test", async(req,res)=>{
+      res.status(200).send({ message: "Hello from test" });
+    })
 
     app.patch("/booking/:id", verifyJWT, async (req, res) => {
       const id = req.params.id;
@@ -262,11 +268,13 @@ const run = async () => {
   }
 }
 
-run().catch(console.dir);
+run().catch((err) => console.log(err));
 
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
+
+
 
 app.listen(port, () => {
   console.log(`Server is working ${port}`);
