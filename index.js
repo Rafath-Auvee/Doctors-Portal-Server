@@ -10,7 +10,7 @@ var nodemailer = require("nodemailer");
 var sgTransport = require("nodemailer-sendgrid-transport");
 
 const corsOptions = {
-  origin: 'https://doctors-portal-client-sigma.vercel.app/', 
+  origin: "*",
   methods: 'GET, POST, PUT, DELETE', 
   allowedHeaders: 'Content-Type, Authorization', 
   exposedHeaders: 'Content-Type, Authorization', 
