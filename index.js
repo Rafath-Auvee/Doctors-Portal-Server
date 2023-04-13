@@ -8,7 +8,15 @@ const app = express();
 const port = process.env.PORT || 5000;
 var nodemailer = require("nodemailer");
 var sgTransport = require("nodemailer-sendgrid-transport");
-app.use(cors({ credentials: true, origin: true }));
+
+const corsOptions = {
+  origin: 'https://doctors-portal-client-sigma.vercel.app/', 
+  methods: 'GET, POST, PUT, DELETE', 
+  allowedHeaders: 'Content-Type, Authorization', 
+  exposedHeaders: 'Content-Type, Authorization', 
+};
+
+app.use(cors({ corsOptions, credentials: true, origin: true }));
 app.use(express.json());
 
 // sk_test_51BoX61IXEsb8wMTRMSwhAWJU4ZwO3VquJsFoxiSA4GYEIVEZv9Qz91sKRHYUKb4w5h1jHGb0B0zEKQBECGsmlyGc00kZHJ5q1R
